@@ -70,6 +70,7 @@ module.exports = postcss.plugin(name, (options) => {
 
     css.walkRules((rule) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
       let map;
       // Check selector parent for any at rule
       if (rule.parent.type === 'atrule') {
@@ -89,12 +90,47 @@ module.exports = postcss.plugin(name, (options) => {
         map = mapTable.get('root');
       }
 =======
+=======
+>>>>>>> Support for nested @rules
         let map;
 
         // Check selector parent for any at rule
         if (rule.parent.type === 'atrule') {
           let query = '';
           const parentName = rule.parent.name.toLowerCase();
+<<<<<<< HEAD
+=======
+
+          // @media and @supports can be nested, so include parentage in the
+          // query.
+          if (parentName === 'media' || parentName === 'supports') {
+              let parent = rule;
+
+              for (;;) {
+                  parent = parent.parent;
+
+                  if (!parent.name) {
+                      break;
+                  }
+
+                  query = `${parent.name.toLowerCase()}${parent.params.
+                                      replace(/\s+/g, '')} ${query}`;
+              }
+          } else {
+              query = parentName.toLowerCase() + rule.parent.params.
+                        replace(/\s+/g, '');
+          }
+
+          if (mapTable.has(query)) {
+              map = mapTable.get(query);
+          } else {
+              map = mapTable.set(query, new Map()).get(query);
+          }
+        } else {
+          // Otherwise we are dealing with a selector in the root
+          map = mapTable.get('root');
+        }
+>>>>>>> Support for nested @rules
 
           // @media and @supports can be nested, so include parentage in the
           // query.
